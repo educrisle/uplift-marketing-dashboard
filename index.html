@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uplift Marketing Análisis</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg:        #F5F6FA;
+  --bg2:       #FFFFFF;
+  --bg3:       #EEF0F6;
+  --border:    rgba(0,0,0,0.08);
+  --border2:   rgba(0,0,0,0.14);
+  --text:      #1A1D2E;
+  --text2:     #4A5170;
+  --text3:     #8890AA;
+  --green:     #0E7A5A;
+  --green-dim: #D6F2E8;
+  --red:       #C0392B;
+  --red-dim:   #FCEAEA;
+  --amber:     #B06B00;
+  --amber-dim: #FEF3DC;
+  --blue:      #1A5FA8;
+  --blue-dim:  #D6E8FA;
+  --purple:    #5B3FBE;
+  --accent:    #0E7A5A;
+  --bogo:      #1A5FA8;
+  --disc:      #0E7A5A;
+  --ctrl:      #6B7494;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* ─── HEADER ─── */
+.header {
+  padding: 28px 32px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+.header-left h1 {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.header-left p {
+  font-size: 12px;
+  color: var(--text3);
+  margin-top: 3px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.header-badge {
+  display: flex; gap: 8px; align-items: center;
+}
+.badge {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 3px;
+  font-weight: 500;
+  letter-spacing: .04em;
+}
+.badge-g { background: var(--green-dim); color: var(--green); }
+.badge-r { background: var(--red-dim); color: var(--red); }
+.badge-a { background: var(--amber-dim); color: var(--amber); }
+.badge-b { background: var(--blue-dim); color: var(--blue); }
+
+/* ─── LAYOUT ─── */
+.main { padding: 20px 32px 40px; display: flex; flex-direction: column; gap: 16px; }
+.row { display: grid; gap: 12px; }
+.r5 { grid-template-columns: repeat(5, 1fr); }
+.r4 { grid-template-columns: repeat(4, 1fr); }
+.r3 { grid-template-columns: repeat(3, 1fr); }
+.r2 { grid-template-columns: 1fr 1fr; }
+.r21 { grid-template-columns: 1.4fr 1fr; }
+.r12 { grid-template-columns: 1fr 1.4fr; }
+
+/* ─── CARDS ─── */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 18px;
+}
+.card-title {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+/* ─── KPI CARDS ─── */
+.kpi {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.kpi::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent-color, var(--green));
+  opacity: .6;
+}
+.kpi-label {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  color: var(--text3);
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.kpi-val {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  color: var(--text);
+}
+.kpi-val.colored { color: var(--accent-color, var(--green)); }
+.kpi-sub {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 6px;
+}
+.kpi-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-top: 6px;
+}
+
+/* ─── FILTERS ─── */
+.filter-bar {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 18px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.filter-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.filter-label {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  color: var(--text3);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-right: 4px;
+  white-space: nowrap;
+}
+.sep { width: 1px; height: 28px; background: var(--border2); }
+
+.fbtn {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .15s;
+  letter-spacing: .03em;
+}
+.fbtn:hover { border-color: var(--text3); color: var(--text); }
+.fbtn.active-bogo { background: var(--blue-dim); border-color: var(--bogo); color: var(--bogo); }
+.fbtn.active-disc { background: var(--green-dim); border-color: var(--disc); color: var(--disc); }
+.fbtn.active-ctrl { background: #EEF0F6; border-color: var(--ctrl); color: var(--ctrl); }
+.fbtn.active-all  { background: #ECEAF8; border-color: var(--purple); color: var(--purple); }
+
+.dbtn {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all .15s;
+  min-width: 36px;
+  text-align: center;
+}
+.dbtn:hover { border-color: var(--text3); color: var(--text2); }
+.dbtn.active { background: #ECEAF8; border-color: var(--purple); color: var(--purple); }
+.dbtn.dall { background: var(--bg3); border-color: var(--border2); color: var(--text2); }
+.dbtn.dall.active { background: #ECEAF8; border-color: var(--purple); color: var(--purple); }
+
+/* ─── HEATMAP ─── */
+.hm-scroll { overflow-x: auto; }
+.hm-table { width: 100%; border-collapse: separate; border-spacing: 3px; table-layout: fixed; }
+.hm-th {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  color: var(--text3);
+  padding: 3px 2px;
+  text-align: center;
+  letter-spacing: .04em;
+  width: auto;
+}
+.hm-th-l { text-align: left; width: 120px; }
+.hm-row-lbl {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  color: var(--text2);
+  padding: 4px 8px 4px 0;
+  white-space: nowrap;
+  vertical-align: middle;
+  width: 120px;
+}
+.hm-cell {
+  border-radius: 5px;
+  padding: 9px 4px;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: default;
+  transition: opacity .15s;
+  position: relative;
+}
+.hm-cell:hover { opacity: .85; }
+.hm-cell-sub { font-size: 8px; margin-top: 2px; opacity: .8; letter-spacing: .02em; font-weight: 400; }
+.hm-opt-border { border-right: 2px dashed #B06B00 !important; }
+.hm-legend {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+}
+.hm-grad {
+  width: 100px; height: 6px; border-radius: 3px;
+  background: linear-gradient(to right, #C0392B, #F4A9A4, #EEF0F6, #A8DCC8, #0E7A5A);
+}
+.hm-leg-lbl { font-family: Arial, Helvetica, sans-serif; font-size: 9px; color: var(--text3); }
+
+/* ─── BAR CHART ─── */
+.bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.bar-lbl { font-family: Arial, Helvetica, sans-serif; font-size: 10px; color: var(--text3); width: 22px; text-align: right; flex-shrink: 0; }
+.bar-track { flex: 1; display: flex; align-items: center; position: relative; height: 18px; }
+.bar-zero { position: absolute; left: 50%; width: 1px; height: 100%; background: var(--border2); }
+.bar-fill { height: 10px; border-radius: 3px; position: absolute; transition: width .4s; }
+.bar-val { font-family: Arial, Helvetica, sans-serif; font-size: 10px; width: 60px; text-align: right; flex-shrink: 0; }
+
+/* ─── TC SEGMENTS ─── */
+.tc-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.tc-row:last-child { border-bottom: none; }
+.tc-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.tc-name { font-size: 11px; color: var(--text2); flex: 1; }
+.tc-track { width: 100px; background: var(--bg3); border-radius: 3px; height: 4px; flex-shrink: 0; }
+.tc-fill { height: 4px; border-radius: 3px; }
+.tc-pct { font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: var(--text); width: 36px; text-align: right; flex-shrink: 0; }
+.tc-rate { font-family: Arial, Helvetica, sans-serif; font-size: 10px; color: var(--text3); width: 50px; text-align: right; flex-shrink: 0; }
+
+/* ─── CHART CANVAS ─── */
+.chart-wrap { position: relative; }
+
+/* ─── INSIGHT BOX ─── */
+.insight {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent-c, var(--green));
+  border-radius: 0 6px 6px 0;
+  padding: 10px 14px;
+  font-size: 11px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+.insight strong { color: var(--text); }
+
+/* ─── COMPARATIVA LINES ─── */
+.comp-legend { display: flex; gap: 16px; margin-bottom: 12px; }
+.comp-leg-item { display: flex; align-items: center; gap: 6px; font-family: Arial, Helvetica, sans-serif; font-size: 9px; color: var(--text3); }
+.comp-leg-dot { width: 20px; height: 2px; border-radius: 1px; }
+
+/* ─── WATERFALL ─── */
+.wf-bar { display: flex; align-items: flex-end; gap: 4px; height: 160px; }
+.wf-col { display: flex; flex-direction: column; align-items: center; flex: 1; }
+.wf-seg { width: 100%; border-radius: 3px 3px 0 0; transition: height .4s; }
+.wf-lbl { font-family: Arial, Helvetica, sans-serif; font-size: 9px; color: var(--text3); margin-top: 5px; }
+.wf-val { font-family: Arial, Helvetica, sans-serif; font-size: 8px; color: var(--text3); margin-top: 2px; }
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <h1>Uplift Marketing Análisis</h1>
+  </div>
+  <div class="header-badge">
+    <span class="badge badge-g">7 deciles rentables</span>
+    <span class="badge badge-b">2,599 conv. incrementales</span>
+    <span class="badge badge-a">30.0% ahorro contactos</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- KPIs -->
+  <div class="row r5">
+    <div class="kpi" style="--accent-color: var(--green)">
+      <div class="kpi-label">Tasa de Conversión</div>
+      <div class="kpi-val colored" id="kpi-tasa">14.68%</div>
+      <div class="kpi-sub" id="kpi-tasa-sub">Todos los grupos</div>
+    </div>
+    <div class="kpi" style="--accent-color: var(--blue)">
+      <div class="kpi-label">Ventas Acumuladas</div>
+      <div class="kpi-val" id="kpi-ventas">9,394</div>
+      <div class="kpi-sub" id="kpi-ventas-sub">todos los deciles</div>
+    </div>
+    <div class="kpi" style="--accent-color: var(--purple)">
+      <div class="kpi-label">Conv. Incrementales</div>
+      <div class="kpi-val colored" id="kpi-incr" style="--accent-color:var(--purple)">2,599</div>
+      <div class="kpi-sub" id="kpi-incr-sub">atribuibles a la oferta</div>
+    </div>
+    <div class="kpi" style="--accent-color: var(--amber)">
+      <div class="kpi-label">Contactos Evitados</div>
+      <div class="kpi-val colored" id="kpi-evitado" style="--accent-color:var(--amber)">19,200</div>
+      <div class="kpi-sub" id="kpi-evitado-sub">D8–D10 · 30.0% del total</div>
+    </div>
+    <div class="kpi" style="--accent-color: var(--red)">
+      <div class="kpi-label">ROI Campaña</div>
+      <div class="kpi-val colored" id="kpi-roi" style="--accent-color:var(--green)">+38.25%</div>
+      <div class="kpi-sub">sobre tasa base control</div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <span class="filter-label">Oferta</span>
+      <button class="fbtn active-all" id="fb-all" onclick="setOferta('all')">Todos</button>
+      <button class="fbtn" id="fb-bogo" onclick="setOferta('bogo')">Buy One Get One</button>
+      <button class="fbtn" id="fb-disc" onclick="setOferta('disc')">Discount</button>
+      <button class="fbtn" id="fb-ctrl" onclick="setOferta('ctrl')">Control</button>
+    </div>
+    <div class="sep"></div>
+    <div class="filter-group">
+      <span class="filter-label">Decil</span>
+      <button class="dbtn dall active" id="db-0" onclick="setDecil(0)">Todos</button>
+      <button class="dbtn" id="db-1" onclick="setDecil(1)">D1</button>
+      <button class="dbtn" id="db-2" onclick="setDecil(2)">D2</button>
+      <button class="dbtn" id="db-3" onclick="setDecil(3)">D3</button>
+      <button class="dbtn" id="db-4" onclick="setDecil(4)">D4</button>
+      <button class="dbtn" id="db-5" onclick="setDecil(5)">D5</button>
+      <button class="dbtn" id="db-6" onclick="setDecil(6)">D6</button>
+      <button class="dbtn" id="db-7" onclick="setDecil(7)">D7</button>
+      <button class="dbtn" id="db-8" onclick="setDecil(8)">D8</button>
+      <button class="dbtn" id="db-9" onclick="setDecil(9)">D9</button>
+      <button class="dbtn" id="db-10" onclick="setDecil(10)">D10</button>
+    </div>
+  </div>
+
+  <!-- HEATMAP + PUNTO ÓPTIMO -->
+  <div class="row r21">
+    <div class="card">
+      <div class="card-title">Heatmap de decisión — uplift incremental % por oferta × decil</div>
+      <div class="hm-legend">
+        <span class="hm-leg-lbl">Negativo</span>
+        <div class="hm-grad"></div>
+        <span class="hm-leg-lbl">Positivo</span>
+        <span style="margin-left:12px;font-family:Arial,Helvetica,sans-serif;font-size:9px;color:var(--text3)">&#124; línea ámbar = corte óptimo</span>
+      </div>
+      <div class="hm-scroll">
+        <table class="hm-table" id="hmTable"></table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Punto óptimo de contacto — conv. incrementales por decil</div>
+      <div id="barChart"></div>
+      <div class="insight" style="margin-top:14px;--accent-c:var(--amber)">
+        <strong>Corte recomendado:</strong> D1–D7 para ambas ofertas.<br>
+        <strong>Discount</strong> mantiene uplift positivo en D7 (+1.29%) mientras <strong>BOGO</strong> ya es negativo (−0.94%).
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARATIVA + TARGET CLASS -->
+  <div class="row r2">
+    <div class="card">
+      <div class="card-title">Tasa de conversión por oferta y decil</div>
+      <div class="comp-legend">
+        <span class="comp-leg-item"><span class="comp-leg-dot" style="background:var(--bogo)"></span>Buy One Get One</span>
+        <span class="comp-leg-item"><span class="comp-leg-dot" style="background:var(--disc)"></span>Discount</span>
+        <span class="comp-leg-item"><span class="comp-leg-dot" style="background:var(--ctrl);opacity:.6;border-top:2px dashed var(--ctrl);height:0;width:20px"></span>Control</span>
+      </div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="chartCompar"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Distribución de segmentos de respuesta (target class)</div>
+      <div id="tcList"></div>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+        <div class="insight" style="--accent-c:var(--green)">
+          Solo <strong>588 persuadibles</strong> (0.92%) justifican la inversión en oferta. Identifica y prioriza este segmento para maximizar el ROI por contacto.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VENTAS ACUMULADAS -->
+  <div class="card">
+    <div class="card-title">Ventas acumuladas por decil — progresión según filtro activo</div>
+    <div class="chart-wrap" style="height:180px">
+      <canvas id="chartWater"></canvas>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ─── DATOS REALES DEL MODELO ───────────────────────────────────────────────
+const RAW = {
+  1:  { bogo:{n:1888,conv:1003,tasa:.53125},        disc:{n:2871,conv:1454,tasa:.5064}, ctrl:{n:1641,conv:70,tasa:.0427}  },
+  2:  { bogo:{n:1753,conv:508,tasa:.2898},           disc:{n:2367,conv:637,tasa:.2691},  ctrl:{n:2287,conv:98,tasa:.0429}  },
+  3:  { bogo:{n:1723,conv:332,tasa:.1927},           disc:{n:2006,conv:358,tasa:.1785},  ctrl:{n:2664,conv:137,tasa:.0514} },
+  4:  { bogo:{n:1609,conv:254,tasa:.1579},           disc:{n:2068,conv:314,tasa:.1518},  ctrl:{n:2723,conv:133,tasa:.0488} },
+  5:  { bogo:{n:1780,conv:211,tasa:.1185},           disc:{n:1946,conv:226,tasa:.1161},  ctrl:{n:2674,conv:139,tasa:.0520} },
+  6:  { bogo:{n:1883,conv:166,tasa:.0882},           disc:{n:2193,conv:219,tasa:.0999},  ctrl:{n:2327,conv:129,tasa:.0554} },
+  7:  { bogo:{n:2304,conv:160,tasa:.0694},           disc:{n:2038,conv:187,tasa:.0918},  ctrl:{n:2055,conv:162,tasa:.0788} },
+  8:  { bogo:{n:2851,conv:182,tasa:.0638},           disc:{n:1890,conv:150,tasa:.0794},  ctrl:{n:1659,conv:226,tasa:.1362} },
+  9:  { bogo:{n:2779,conv:204,tasa:.0734},           disc:{n:2024,conv:171,tasa:.0845},  ctrl:{n:1597,conv:344,tasa:.2154} },
+  10: { bogo:{n:2817,conv:218,tasa:.0774},           disc:{n:1904,conv:178,tasa:.0935},  ctrl:{n:1679,conv:824,tasa:.4908} }
+};
+
+const UPLIFT = {
+  bogo:    [48.86, 24.69, 14.13, 10.90,  6.66,  3.27, -0.94, -7.24,-14.20,-41.34],
+  disc:    [46.38, 22.63, 12.70, 10.30,  6.42,  4.44,  1.29, -5.69,-13.09,-39.73],
+  convIncr:[2254,   968,   498,   388,   243,   159,     5,  -314,  -660,-1921]
+};
+
+const TC = [
+  {name:'TR — Persuadibles',         n:588,   conv:458, color:'#0E7A5A'},
+  {name:'TN — Tratamiento no conv.', n:29353, conv:3789,color:'#8890AA'},
+  {name:'CN — Control no conv.',     n:33874, conv:5031,color:'#C0C8DC'},
+  {name:'CR — Sleeping dogs',        n:185,   conv:116, color:'#C0392B'}
+];
+
+let currentOferta = 'all';
+let currentDecil  = 0;
+let chartCompar = null, chartWater = null;
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────
+function fmt(n, decimals=0) {
+  return n.toLocaleString('es-ES', {minimumFractionDigits:decimals, maximumFractionDigits:decimals});
+}
+
+function hmColor(v) {
+  if (v > 35)  return {bg:'#0E7A5A', txt:'#FFFFFF'};
+  if (v > 20)  return {bg:'#1A9E78', txt:'#FFFFFF'};
+  if (v > 10)  return {bg:'#5DC4A0', txt:'#FFFFFF'};
+  if (v > 3)   return {bg:'#A8DCC8', txt:'#0E5A42'};
+  if (v > 0)   return {bg:'#D6F2E8', txt:'#0E5A42'};
+  if (v > -5)  return {bg:'#EEF0F6', txt:'#6B7494'};
+  if (v > -15) return {bg:'#FCEAEA', txt:'#C0392B'};
+  if (v > -30) return {bg:'#F4A9A4', txt:'#7A1A14'};
+  return {bg:'#C0392B', txt:'#FFFFFF'};
+}
+
+function getDeciles() {
+  return currentDecil === 0 ? [1,2,3,4,5,6,7,8,9,10] : Array.from({length:currentDecil},(_,i)=>i+1);
+}
+
+function getFiltered() {
+  return getDeciles().reduce((acc, d) => {
+    const r = RAW[d];
+    acc[d] = currentOferta === 'bogo' ? {treat:r.bogo, ctrl:r.ctrl}
+           : currentOferta === 'disc' ? {treat:r.disc, ctrl:r.ctrl}
+           : currentOferta === 'ctrl' ? {treat:{n:0,conv:0,tasa:0}, ctrl:r.ctrl}
+           : {treat:{n:r.bogo.n+r.disc.n, conv:r.bogo.conv+r.disc.conv, tasa:(r.bogo.conv+r.disc.conv)/(r.bogo.n+r.disc.n)}, ctrl:r.ctrl};
+    return acc;
+  }, {});
+}
+
+// ─── KPI UPDATE ───────────────────────────────────────────────────────────
+function updateKPIs() {
+  const deciles = getDeciles();
+
+  // Acumulados reales por grupo (sin mezclar denominadores)
+  let treatConv=0, treatN=0, ctrlConv=0, ctrlN=0;
+  deciles.forEach(d => {
+    const r = RAW[d];
+    if (currentOferta === 'bogo') {
+      treatConv += r.bogo.conv; treatN += r.bogo.n;
+    } else if (currentOferta === 'disc') {
+      treatConv += r.disc.conv; treatN += r.disc.n;
+    } else if (currentOferta === 'ctrl') {
+      treatConv += 0; treatN += 0;
+    } else {
+      treatConv += r.bogo.conv + r.disc.conv;
+      treatN    += r.bogo.n   + r.disc.n;
+    }
+    ctrlConv += r.ctrl.conv;
+    ctrlN    += r.ctrl.n;
+  });
+
+  // Tasa de conversión: sobre la base del grupo filtrado
+  let tasa = 0;
+  if (currentOferta === 'ctrl') {
+    tasa = ctrlN > 0 ? ctrlConv / ctrlN : 0;
+  } else if (currentOferta === 'all') {
+    tasa = (treatN + ctrlN) > 0 ? (treatConv + ctrlConv) / (treatN + ctrlN) : 0;
+  } else {
+    tasa = treatN > 0 ? treatConv / treatN : 0;
+  }
+  document.getElementById('kpi-tasa').textContent = (tasa*100).toFixed(2)+'%';
+
+  // Ventas acumuladas: ventas brutas del grupo seleccionado
+  const ventas = currentOferta === 'ctrl' ? ctrlConv
+               : currentOferta === 'all'  ? treatConv + ctrlConv
+               : treatConv;
+  document.getElementById('kpi-ventas').textContent = fmt(ventas);
+
+  // Conversiones incrementales: tratados - (n_tratados * tasa_control_global)
+  const tasaCtrlGlobal = ctrlN > 0 ? ctrlConv / ctrlN : 0;
+  const totIncr = currentOferta === 'ctrl' ? 0
+                : treatConv - (treatN * tasaCtrlGlobal);
+
+  document.getElementById('kpi-incr').textContent = fmt(Math.round(totIncr));
+
+  const ofLabel = {all:'Todos los grupos',bogo:'Buy One Get One',disc:'Discount',ctrl:'Control'}[currentOferta];
+  const dLabel  = currentDecil===0 ? 'todos los deciles' : 'D1 – D'+currentDecil;
+  document.getElementById('kpi-tasa-sub').textContent  = ofLabel;
+  document.getElementById('kpi-ventas-sub').textContent = dLabel;
+  document.getElementById('kpi-incr-sub').textContent  = 'atribuibles a la oferta · '+dLabel;
+}
+
+// ─── HEATMAP ──────────────────────────────────────────────────────────────
+function buildHeatmap() {
+  const deciles = [1,2,3,4,5,6,7,8,9,10];
+  const offers  = [
+    {label:'Buy One Get One', key:'bogo'},
+    {label:'Discount',        key:'disc'}
+  ];
+
+  let html = '<thead><tr><th class="hm-th hm-th-l"></th>';
+  deciles.forEach(d => { html += `<th class="hm-th">D${d}</th>`; });
+  html += '</tr></thead><tbody>';
+
+  offers.forEach(o => {
+    html += `<tr><td class="hm-row-lbl">${o.label}</td>`;
+    UPLIFT[o.key].forEach((v, i) => {
+      const c   = hmColor(v);
+      const opt = i === 6 ? 'hm-opt-border' : '';
+      const lbl = v > 0 ? 'rentable' : v > -5 ? 'marginal' : 'negativo';
+      html += `<td class="hm-cell ${opt}" style="background:${c.bg};color:${c.txt}">
+        ${v>0?'+':''}${v.toFixed(1)}%
+        <div class="hm-cell-sub">${lbl}</div>
+      </td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody>';
+  document.getElementById('hmTable').innerHTML = html;
+}
+
+// ─── BAR CHART (CONV INCREMENTALES) ───────────────────────────────────────
+function buildBarChart() {
+  const data = currentOferta === 'bogo' ? [922,433,243,175,118,62,-22,-206,-395,-1164]
+             : currentOferta === 'disc' ? [1332,536,255,213,125,97,26,-107,-265,-756]
+             : currentOferta === 'ctrl' ? [0,0,0,0,0,0,0,0,0,0]
+             : UPLIFT.convIncr;
+
+  const deciles = getDeciles();
+  const subset  = deciles.map(d => ({d, v: data[d-1]}));
+  const maxAbs  = Math.max(...subset.map(s => Math.abs(s.v)), 1);
+
+  let html = '';
+  subset.forEach(({d, v}) => {
+    const isPos = v >= 0;
+    const w = Math.round(Math.abs(v)/maxAbs*50);
+    const col = isPos ? '#0E7A5A' : '#C0392B';
+    html += `<div class="bar-row">
+      <div class="bar-lbl">D${d}</div>
+      <div class="bar-track">
+        <div class="bar-zero"></div>
+        ${isPos
+          ? `<div class="bar-fill" style="left:50%;width:${w}%;background:${col}"></div>`
+          : `<div class="bar-fill" style="right:50%;width:${w}%;background:${col}"></div>`}
+      </div>
+      <div class="bar-val" style="color:${isPos?'#0E7A5A':'#C0392B'}">${isPos?'+':''}${fmt(Math.round(v))}</div>
+    </div>`;
+  });
+  document.getElementById('barChart').innerHTML = html;
+}
+
+// ─── LÍNEAS COMPARATIVA ───────────────────────────────────────────────────
+function buildCompar() {
+  const deciles = getDeciles();
+  const labels  = deciles.map(d => 'D'+d);
+  const bogo    = deciles.map(d => parseFloat((RAW[d].bogo.tasa*100).toFixed(2)));
+  const disc    = deciles.map(d => parseFloat((RAW[d].disc.tasa*100).toFixed(2)));
+  const ctrl    = deciles.map(d => parseFloat((RAW[d].ctrl.tasa*100).toFixed(2)));
+
+  if (chartCompar) chartCompar.destroy();
+  chartCompar = new Chart(document.getElementById('chartCompar'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {label:'BOGO',    data:bogo, borderColor:'#1A5FA8', borderWidth:2, pointRadius:3, pointBackgroundColor:'#1A5FA8', tension:.3, fill:false},
+        {label:'Discount',data:disc, borderColor:'#0E7A5A', borderWidth:2, pointRadius:3, pointBackgroundColor:'#0E7A5A', tension:.3, fill:false},
+        {label:'Control', data:ctrl, borderColor:'#8890AA', borderWidth:1.5, pointRadius:2, pointBackgroundColor:'#8890AA', tension:.3, borderDash:[4,3], fill:false}
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#FFFFFF',
+          borderColor:'rgba(0,0,0,0.12)',
+          borderWidth:1,
+          titleColor:'#8890AA',
+          bodyColor:'#1A1D2E',
+          titleFont:{family:'Arial', size:10},
+          bodyFont:{family:'Arial', size:11},
+          callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%`}
+        }
+      },
+      scales:{
+        x:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#8890AA',font:{family:'Arial',size:10}}},
+        y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#8890AA',font:{family:'Arial',size:10},callback:v=>v+'%'},
+           title:{display:true,text:'Tasa de conversión',color:'#B0B8CC',font:{family:'Arial',size:9}}}
+      }
+    }
+  });
+}
+
+// ─── WATERFALL ─────────────────────────────────────────────────────────────
+function buildWater() {
+  const f = getFiltered();
+  const deciles = getDeciles();
+  let cum = 0;
+  const labels = [], data = [];
+  deciles.forEach(d => {
+    const {treat, ctrl} = f[d];
+    const v = currentOferta==='ctrl' ? ctrl.conv
+            : currentOferta==='all'  ? treat.conv+ctrl.conv
+            : treat.conv;
+    cum += v;
+    labels.push('D'+d);
+    data.push(cum);
+  });
+
+  const maxV = Math.max(...data, 1);
+  const colors = data.map((_,i) => `rgba(26,95,168,${0.25+i/data.length*0.65})`);
+
+  if (chartWater) chartWater.destroy();
+  chartWater = new Chart(document.getElementById('chartWater'), {
+    type:'bar',
+    data:{
+      labels,
+      datasets:[{label:'Ventas acumuladas', data, backgroundColor:colors, borderRadius:3}]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#FFFFFF',
+          borderColor:'rgba(0,0,0,0.12)',
+          borderWidth:1,
+          titleColor:'#8890AA',
+          bodyColor:'#1A1D2E',
+          titleFont:{family:'Arial', size:10},
+          bodyFont:{family:'Arial', size:11},
+          callbacks:{label:ctx=>`Acumulado: ${fmt(ctx.parsed.y)} ventas`}
+        }
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{color:'#8890AA',font:{family:'Arial',size:10}}},
+        y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#8890AA',font:{family:'Arial',size:10},callback:v=>fmt(v)},
+           title:{display:true,text:'Ventas acumuladas',color:'#B0B8CC',font:{family:'Arial',size:9}}}
+      }
+    }
+  });
+}
+
+// ─── TARGET CLASS ──────────────────────────────────────────────────────────
+function buildTC() {
+  const maxN = Math.max(...TC.map(t=>t.n));
+  let html = '';
+  TC.forEach(t => {
+    const pct  = (t.n/64000*100).toFixed(1);
+    const rate = (t.conv/t.n*100).toFixed(1);
+    const w    = Math.round(t.n/maxN*100);
+    html += `<div class="tc-row">
+      <div class="tc-dot" style="background:${t.color}"></div>
+      <div class="tc-name">${t.name}</div>
+      <div class="tc-track"><div class="tc-fill" style="width:${w}%;background:${t.color}"></div></div>
+      <div class="tc-pct">${pct}%</div>
+      <div class="tc-rate">${rate}% conv</div>
+    </div>`;
+  });
+  document.getElementById('tcList').innerHTML = html;
+}
+
+// ─── FILTER HANDLERS ───────────────────────────────────────────────────────
+function setOferta(o) {
+  currentOferta = o;
+  ['all','bogo','disc','ctrl'].forEach(x => {
+    document.getElementById('fb-'+x).className = 'fbtn';
+  });
+  document.getElementById('fb-'+o).className = 'fbtn active-'+o;
+  update();
+}
+
+function setDecil(d) {
+  currentDecil = d;
+  for(let i=0;i<=10;i++) {
+    const el = document.getElementById('db-'+i);
+    el.className = i===0 ? 'dbtn dall' : 'dbtn';
+    if(i===d) el.classList.add('active');
+  }
+  update();
+}
+
+function update() {
+  updateKPIs();
+  buildBarChart();
+  buildCompar();
+  buildWater();
+}
+
+// ─── INIT ──────────────────────────────────────────────────────────────────
+buildHeatmap();
+buildTC();
+update();
+</script>
+</body>
+</html>
