@@ -43,12 +43,13 @@ body {
 
 /* ─── HEADER ─── */
 .header {
-  padding: 28px 32px 20px;
+  padding: 20px 32px 16px;
   border-bottom: 1px solid var(--border);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 20px;
+  background: var(--white);
 }
 .header-left h1 {
   font-family: Arial, Helvetica, sans-serif;
@@ -65,12 +66,12 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 .header-badge {
-  display: flex; gap: 8px; align-items: center;
+  display: flex; gap: 6px; align-items: center;
 }
 .badge {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 10px;
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: 3px;
   font-weight: 500;
   letter-spacing: .04em;
@@ -100,10 +101,11 @@ body {
 .card-title {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 10px;
+  font-weight: 700;
   color: var(--text3);
   letter-spacing: .06em;
   text-transform: uppercase;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 /* ─── KPI CARDS ─── */
@@ -111,7 +113,7 @@ body {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 18px;
+  padding: 16px 18px;
   position: relative;
   overflow: hidden;
 }
@@ -129,7 +131,7 @@ body {
   color: var(--text3);
   letter-spacing: .07em;
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 .kpi-val {
   font-family: Arial, Helvetica, sans-serif;
@@ -143,7 +145,7 @@ body {
 .kpi-sub {
   font-size: 11px;
   color: var(--text3);
-  margin-top: 6px;
+  margin-top: 5px;
 }
 .kpi-delta {
   display: inline-flex;
