@@ -37,22 +37,23 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   background: var(--bg);
   color: var(--text);
-  min-height: 100vh;
-  padding: 0;
+  height: 720px;
+  overflow: hidden;
 }
 
 /* ─── HEADER ─── */
 .header {
-  padding: 28px 32px 20px;
+  padding: 10px 20px;
   border-bottom: 1px solid var(--border);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 12px;
+  background: var(--white);
 }
 .header-left h1 {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 22px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.01em;
   text-transform: uppercase;
@@ -65,12 +66,12 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 .header-badge {
-  display: flex; gap: 8px; align-items: center;
+  display: flex; gap: 6px; align-items: center;
 }
 .badge {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 10px;
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: 3px;
   font-weight: 500;
   letter-spacing: .04em;
@@ -81,8 +82,8 @@ body {
 .badge-b { background: var(--blue-dim); color: var(--blue); }
 
 /* ─── LAYOUT ─── */
-.main { padding: 20px 32px 40px; display: flex; flex-direction: column; gap: 16px; }
-.row { display: grid; gap: 12px; }
+.main { padding: 8px 14px 10px; display: flex; flex-direction: column; gap: 7px; }
+.row { display: grid; gap: 7px; }
 .r5 { grid-template-columns: repeat(5, 1fr); }
 .r4 { grid-template-columns: repeat(4, 1fr); }
 .r3 { grid-template-columns: repeat(3, 1fr); }
@@ -95,15 +96,16 @@ body {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 16px 18px;
+  padding: 8px 12px;
 }
 .card-title {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 10px;
+  font-size: 9px;
+  font-weight: 700;
   color: var(--text3);
   letter-spacing: .06em;
   text-transform: uppercase;
-  margin-bottom: 14px;
+  margin-bottom: 6px;
 }
 
 /* ─── KPI CARDS ─── */
@@ -111,7 +113,7 @@ body {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 18px;
+  padding: 8px 12px;
   position: relative;
   overflow: hidden;
 }
@@ -125,15 +127,15 @@ body {
 }
 .kpi-label {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 9px;
+  font-size: 8px;
   color: var(--text3);
   letter-spacing: .07em;
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 }
 .kpi-val {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1;
@@ -141,9 +143,9 @@ body {
 }
 .kpi-val.colored { color: var(--accent-color, var(--green)); }
 .kpi-sub {
-  font-size: 11px;
+  font-size: 9px;
   color: var(--text3);
-  margin-top: 6px;
+  margin-top: 3px;
 }
 .kpi-delta {
   display: inline-flex;
@@ -161,9 +163,9 @@ body {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 14px 18px;
+  padding: 7px 12px;
   display: flex;
-  gap: 24px;
+  gap: 16px;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -177,13 +179,13 @@ body {
   margin-right: 4px;
   white-space: nowrap;
 }
-.sep { width: 1px; height: 28px; background: var(--border2); }
+.sep { width: 1px; height: 20px; background: var(--border2); }
 
 .fbtn {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 10px;
   font-weight: 500;
-  padding: 6px 12px;
+  padding: 4px 10px;
   border-radius: 4px;
   border: 1px solid var(--border2);
   background: transparent;
@@ -202,14 +204,14 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 10px;
   font-weight: 500;
-  padding: 5px 10px;
+  padding: 3px 7px;
   border-radius: 4px;
   border: 1px solid var(--border);
   background: transparent;
   color: var(--text3);
   cursor: pointer;
   transition: all .15s;
-  min-width: 36px;
+  min-width: 30px;
   text-align: center;
 }
 .dbtn:hover { border-color: var(--text3); color: var(--text2); }
@@ -254,7 +256,7 @@ body {
 .hm-cell-sub { font-size: 8px; margin-top: 2px; opacity: .8; letter-spacing: .02em; font-weight: 400; }
 .hm-opt-border { border-right: 2px dashed #B06B00 !important; }
 .hm-legend {
-  display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
 }
 .hm-grad {
   width: 100px; height: 6px; border-radius: 3px;
@@ -263,7 +265,7 @@ body {
 .hm-leg-lbl { font-family: Arial, Helvetica, sans-serif; font-size: 9px; color: var(--text3); }
 
 /* ─── BAR CHART ─── */
-.bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
 .bar-lbl { font-family: Arial, Helvetica, sans-serif; font-size: 10px; color: var(--text3); width: 22px; text-align: right; flex-shrink: 0; }
 .bar-track { flex: 1; display: flex; align-items: center; position: relative; height: 18px; }
 .bar-zero { position: absolute; left: 50%; width: 1px; height: 100%; background: var(--border2); }
@@ -271,7 +273,7 @@ body {
 .bar-val { font-family: Arial, Helvetica, sans-serif; font-size: 10px; width: 60px; text-align: right; flex-shrink: 0; }
 
 /* ─── TC SEGMENTS ─── */
-.tc-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.tc-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--border); }
 .tc-row:last-child { border-bottom: none; }
 .tc-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 .tc-name { font-size: 11px; color: var(--text2); flex: 1; }
@@ -297,7 +299,7 @@ body {
 .insight strong { color: var(--text); }
 
 /* ─── COMPARATIVA LINES ─── */
-.comp-legend { display: flex; gap: 16px; margin-bottom: 12px; }
+.comp-legend { display: flex; gap: 16px; margin-bottom: 6px; }
 .comp-leg-item { display: flex; align-items: center; gap: 6px; font-family: Arial, Helvetica, sans-serif; font-size: 9px; color: var(--text3); }
 .comp-leg-dot { width: 20px; height: 2px; border-radius: 1px; }
 
@@ -399,10 +401,6 @@ body {
     <div class="card">
       <div class="card-title">Punto óptimo de contacto — conv. incrementales por decil</div>
       <div id="barChart"></div>
-      <div class="insight" style="margin-top:14px;--accent-c:var(--amber)">
-        <strong>Corte recomendado:</strong> D1–D7 para ambas ofertas.<br>
-        <strong>Discount</strong> mantiene uplift positivo en D7 (+1.29%) mientras <strong>BOGO</strong> ya es negativo (−0.94%).
-      </div>
     </div>
   </div>
 
@@ -415,7 +413,7 @@ body {
         <span class="comp-leg-item"><span class="comp-leg-dot" style="background:var(--disc)"></span>Discount</span>
         <span class="comp-leg-item"><span class="comp-leg-dot" style="background:var(--ctrl);opacity:.6;border-top:2px dashed var(--ctrl);height:0;width:20px"></span>Control</span>
       </div>
-      <div class="chart-wrap" style="height:220px">
+      <div class="chart-wrap" style="height:180px">
         <canvas id="chartCompar"></canvas>
       </div>
     </div>
@@ -423,18 +421,13 @@ body {
     <div class="card">
       <div class="card-title">Distribución de segmentos de respuesta (target class)</div>
       <div id="tcList"></div>
-      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
-        <div class="insight" style="--accent-c:var(--green)">
-          Solo <strong>588 persuadibles</strong> (0.92%) justifican la inversión en oferta. Identifica y prioriza este segmento para maximizar el ROI por contacto.
-        </div>
-      </div>
     </div>
   </div>
 
   <!-- VENTAS ACUMULADAS -->
   <div class="card">
     <div class="card-title">Ventas acumuladas por decil — progresión según filtro activo</div>
-    <div class="chart-wrap" style="height:180px">
+    <div class="chart-wrap" style="height:150px">
       <canvas id="chartWater"></canvas>
     </div>
   </div>
