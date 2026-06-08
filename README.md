@@ -75,4 +75,110 @@ Solo el ~4,6% de la base (~2.900 clientes) son verdaderamente persuadibles. Foca
 
 Se entrenaron **dos modelos XGBoost independientes** —uno para la oferta Discount y otro para BOGO— dado que cada mecánica atrae perfiles de cliente distintos. El enfoque es de clasificación multiclase (4 clases: CN, CR, TN, TR), donde la clase TR representa al cliente persuadible.
 
-🔗 [Ver dashboard interactivo →]( https://educrisle.github.io/uplift-marketing-dashboard/)
+**Pipeline de entrenamiento:**
+```
+ColumnTransformer (StandardScaler | passthrough)
+        ↓
+XGBClassifier (objective: multi:softprob, num_class: 4)
+```
+
+**Ajuste de hiperparámetros:**
+- `RandomizedSearchCV` con 30 iteraciones sobre 9 hiperparámetros (`n_estimators`, `max_depth`, `learning_rate`, `subsample`, `colsample_bytree`, `min_child_weight`, `gamma`, `reg_alpha`, `reg_lambda`).
+- Métrica de optimización: `f1_macro` (balanceada para clases desiguales).
+- Corrección del desbalanceo de clase con `scale_pos_weight` (ratio clase mayoritaria / clase TR).
+
+**Validación:**
+- `StratifiedKFold` con 5 splits, garantizando que los resultados son generalizables a campañas futuras.
+
+### Evaluación por deciles y AUUC
+
+Una vez generados los scores de persuadibilidad, la base se dividió en 10 deciles de igual tamaño. Para cada decil se midió el uplift real: diferencia de tasa de conversión entre clientes que recibieron la oferta y los que no, dentro del mismo grupo.
+
+La métrica global de comparación entre modelos es el **AUUC (Area Under Uplift Curve)**, que resume la capacidad de ordenar correctamente a los persuadibles en toda la base.
+
+### Explicabilidad con SHAP
+
+Se aplicaron SHAP values sobre ambos modelos para identificar las variables de mayor peso en la persuadibilidad de cada cliente, haciendo los modelos interpretables para el equipo de negocio.
+
+---
+
+## Resultados
+
+### KPIs del proyecto
+
+| Métrica | Valor |
+|---|---|
+| ROI sobre grupo de control | **+38,25%** |
+| Conversiones incrementales atribuibles a las ofertas | **2.599** |
+| Contactos evitados (D8-D10, 30% de la base) | **19.200** |
+| Clientes persuadibles estimados | **~2.900 (~4,6%)** |
+| Ventas totales acumuladas | **9.394** |
+
+### Comparativa de modelos
+
+| Oferta | AUUC | Deciles rentables | Uplift en D1 | Veredicto |
+|---|---|---|---|---|
+| Discount | 236,87 | D1–D7 (70% de la base) | +7,84% | Ganadora global (+30% vs BOGO) |
+| BOGO | 181,79 | D1–D6 (60% de la base) | +9,06% | Mayor intensidad en top segmento |
+
+### Análisis por deciles
+
+| Decil | Perfil | Uplift Discount | Uplift BOGO | Acción |
+|---|---|---|---|---|
+| D1 | Máxima persuadibilidad | +7,84% | +9,06% | Ambas ofertas |
+| D2–D4 | Alta persuadibilidad | Positivo | Positivo | Ambas ofertas |
+| D5–D6 | Persuadibilidad media | Positivo | Positivo | Ambas ofertas |
+| D7 | Persuadibilidad baja | +1,29% | −0,94% | Solo Discount |
+| D8–D10 | Sin persuadibilidad | Negativo | Negativo | No contactar |
+
+### Estrategia óptima resultante
+
+```
+D1–D2  →  BOGO      (mayor intensidad de conversión donde más importa)
+D3–D7  →  Discount  (cobertura amplia con ROI positivo)
+D8–D10 →  Excluir   (ROI neto negativo — 19.200 clientes, 30% de la base)
+```
+
+---
+
+## Entrega y puesta en producción
+
+Los scores individuales de persuadibilidad de los 64.000 clientes fueron exportados a CSV (separador `;`, decimal `,`, encoding `utf-8-sig` para compatibilidad con Power BI en español) e integrados en un **dashboard interactivo de Power BI** para uso operativo del equipo de marketing.
+
+El dashboard permite filtrar y priorizar audiencias por decil, oferta recomendada y score individual antes de cada campaña, sin necesidad de conocer el modelo.
+
+🔗 **[Ver dashboard interactivo →](https://educrisle.github.io/uplift-marketing-dashboard/)**
+
+---
+
+## Stack tecnológico
+
+| Categoría | Herramientas |
+|---|---|
+| Lenguaje | Python 3 |
+| Modelado | XGBoost, Scikit-learn |
+| Explicabilidad | SHAP |
+| Análisis y preprocesamiento | Pandas, NumPy |
+| Visualización | Matplotlib, Seaborn |
+| Validación | StratifiedKFold, RandomizedSearchCV |
+| Entrega | Power BI |
+
+---
+
+## Estructura del repositorio
+
+```
+uplift-marketing-dashboard/
+├── README.md                        ← este archivo
+├── Optimizacion_UPM.ipynb           ← notebook completo con todo el análisis
+├── marketing_promotion_sample.csv   ← muestra representativa (2.000 registros)
+├── Informe_rentabilidad_UPM.pdf     ← informe ejecutivo para negocio
+├── index.html                       ← punto de entrada para GitHub Pages
+└── uplift_dashboard.html            ← dashboard interactivo
+```
+
+---
+
+## Próximos pasos
+
+El análisis actual opera a nivel de oferta y decil de persuadibilidad. El siguiente paso recomendado es un **análisis de uplift segmentado por canal de contacto** (Teléfono / Web / Multicanal), que permitiría optimizar no solo qué oferta enviar, sino cómo contactar a cada cliente para maximizar el impacto, sin necesidad de aumentar el presupuesto.
