@@ -74,3 +74,5 @@ Solo el ~4,6% de la base (~2.900 clientes) son verdaderamente persuadibles. Foca
 ### Modelado
 
 Se entrenaron **dos modelos XGBoost independientes** —uno para la oferta Discount y otro para BOGO— dado que cada mecánica atrae perfiles de cliente distintos. El enfoque es de clasificación multiclase (4 clases: CN, CR, TN, TR), donde la clase TR representa al cliente persuadible.
+
+🔗 [Ver dashboard interactivo →]( https://educrisle.github.io/uplift-marketing-dashboard/)
