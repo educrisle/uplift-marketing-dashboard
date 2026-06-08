@@ -310,6 +310,60 @@ body {
 .wf-lbl { font-family: Arial, Helvetica, sans-serif; font-size: 9px; color: var(--text3); margin-top: 5px; }
 .wf-val { font-family: Arial, Helvetica, sans-serif; font-size: 8px; color: var(--text3); margin-top: 2px; }
 
+
+/* ─── RESPONSIVE MOBILE ─── */
+@media (max-width: 768px) {
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px 16px 12px;
+    gap: 10px;
+  }
+  .header-left h1 { font-size: 16px; }
+  .header-badge { flex-wrap: wrap; gap: 5px; }
+
+  .main { padding: 12px 12px 32px; gap: 12px; }
+
+  .r5, .r4, .r3 { grid-template-columns: repeat(2, 1fr); }
+  .r2, .r21, .r12 { grid-template-columns: 1fr; }
+
+  .kpi-val { font-size: 22px; }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+  .sep { display: none; }
+  .filter-group { flex-wrap: wrap; gap: 6px; }
+
+  .fbtn { font-size: 11px; padding: 7px 10px; }
+  .dbtn { font-size: 11px; padding: 6px 8px; min-width: 34px; }
+
+  .hm-th { font-size: 8px; }
+  .hm-row-lbl { font-size: 9px; width: 80px; }
+  .hm-cell { font-size: 9px; padding: 7px 2px; }
+  .hm-cell-sub { display: none; }
+
+  .bar-val { font-size: 9px; width: 48px; }
+
+  .tc-track { width: 60px; }
+  .tc-name { font-size: 10px; }
+
+  .chart-wrap { height: 200px !important; }
+
+  .card { padding: 12px 14px; }
+}
+
+@media (max-width: 420px) {
+  .r5, .r4, .r3 { grid-template-columns: 1fr 1fr; }
+  .header-left h1 { font-size: 14px; }
+  .kpi-val { font-size: 20px; }
+  .hm-row-lbl { width: 60px; font-size: 8px; }
+}
+
 </style>
 </head>
 <body>
